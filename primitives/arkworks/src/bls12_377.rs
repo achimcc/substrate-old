@@ -19,16 +19,20 @@
 
 #![warn(missing_docs)]
 
+use core::default::default;
+
 use crate::utils::serialize_result;
-use ark_bls12_377::{g1, g2, Bls12_377, G1Affine, G1Projective, G2Affine, G2Projective};
+use ark_bls12_377::{g1, g2, Bls12_377, G1Affine, G1Projective, G2Affine, G2Projective, Fq12Config};
 use ark_ec::{
 	models::CurveConfig,
 	pairing::{MillerLoopOutput, Pairing},
-	short_weierstrass::SWCurveConfig,
+	short_weierstrass::SWCurveConfig, Group,
 };
 use ark_serialize::{CanonicalDeserialize, Compress, Validate};
 use ark_std::io::Cursor;
 use sp_std::vec::Vec;
+use ark_ff::fields::models::quadratic_extension::QuadExtField;
+use ark_r1cs_std;
 
 /// Compute multi miller loop through arkworks
 pub fn multi_miller_loop(a_vec: Vec<Vec<u8>>, b_vec: Vec<Vec<u8>>) -> Vec<u8> {
@@ -59,7 +63,7 @@ pub fn multi_miller_loop(a_vec: Vec<Vec<u8>>, b_vec: Vec<Vec<u8>>) -> Vec<u8> {
 		})
 		.collect();
 
-	let result = Bls12_377::multi_miller_loop(g1, g2).0;
+	let result = QuadExtField<Fp12ConfigWrapper<Fq12Config>>::generator();
 
 	serialize_result(result)
 }
@@ -74,7 +78,7 @@ pub fn final_exponentiation(target: Vec<u8>) -> Vec<u8> {
 	)
 	.unwrap();
 
-	let result = Bls12_377::final_exponentiation(MillerLoopOutput(target)).unwrap().0;
+	let result = QuadExtField<Fp12ConfigWrapper<Fq12Config>>::generator();
 
 	serialize_result(result)
 }
@@ -87,7 +91,7 @@ pub fn mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
 	let cursor = Cursor::new(scalar);
 	let scalar = Vec::<u64>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
 
-	let result = <g2::Config as SWCurveConfig>::mul_projective(&base, &scalar);
+	let result =  G2Projective::generator();
 
 	serialize_result(result)
 }
@@ -100,7 +104,7 @@ pub fn mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
 	let cursor = Cursor::new(scalar);
 	let scalar = Vec::<u64>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
 
-	let result = <g1::Config as SWCurveConfig>::mul_projective(&base, &scalar);
+	let result = G1Projective::generator();
 
 	serialize_result(result)
 }
@@ -113,7 +117,7 @@ pub fn mul_affine_g1(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
 	let cursor = Cursor::new(scalar);
 	let scalar = Vec::<u64>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
 
-	let result = <g1::Config as SWCurveConfig>::mul_affine(&base, &scalar);
+	let result = G1Projective::generator();
 
 	serialize_result(result)
 }
@@ -126,7 +130,7 @@ pub fn mul_affine_g2(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
 	let cursor = Cursor::new(scalar);
 	let scalar = Vec::<u64>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
 
-	let result = <g2::Config as SWCurveConfig>::mul_affine(&base, &scalar);
+	let result = G2Projective::generator();
 
 	serialize_result(result)
 }
@@ -158,8 +162,7 @@ pub fn msm_g1(bases: Vec<Vec<u8>>, scalars: Vec<Vec<u8>>) -> Vec<u8> {
 		})
 		.collect();
 
-	let result =
-		<<Bls12_377 as Pairing>::G1 as ark_ec::VariableBaseMSM>::msm(&bases, &scalars).unwrap();
+	let result = G1Projective::generator();
 
 	serialize_result(result)
 }
@@ -191,8 +194,7 @@ pub fn msm_g2(bases: Vec<Vec<u8>>, scalars: Vec<Vec<u8>>) -> Vec<u8> {
 		})
 		.collect();
 
-	let result =
-		<<Bls12_377 as Pairing>::G2 as ark_ec::VariableBaseMSM>::msm(&bases, &scalars).unwrap();
+	let result = G2Projective::generator();
 
 	serialize_result(result)
 }

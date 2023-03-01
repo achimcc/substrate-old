@@ -10230,6 +10230,7 @@ dependencies = [
  "ark-ed-on-bls12-377",
  "ark-ed-on-bls12-381",
  "ark-ff",
+ "ark-r1cs-std",
  "ark-serialize",
  "ark-std",
  "sp-std",
