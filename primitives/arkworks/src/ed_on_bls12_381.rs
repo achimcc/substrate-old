@@ -21,11 +21,8 @@
 
 use crate::utils::serialize_result;
 use ark_ec::{
-	models::CurveConfig,
-	short_weierstrass::{Affine as SWAffine, SWCurveConfig},
-	twisted_edwards,
-	twisted_edwards::{Affine as TEAffine, TECurveConfig},
-	Group, VariableBaseMSM,
+	models::CurveConfig, short_weierstrass::Affine as SWAffine, twisted_edwards,
+	twisted_edwards::Affine as TEAffine, Group,
 };
 use ark_ed_on_bls12_381::{EdwardsProjective, JubjubConfig, SWProjective};
 use ark_serialize::{CanonicalDeserialize, Compress, Validate};

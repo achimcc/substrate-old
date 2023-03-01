@@ -20,11 +20,8 @@
 #![warn(missing_docs)]
 
 use crate::utils::serialize_result;
-use ark_ec::{
-	models::CurveConfig, twisted_edwards, twisted_edwards::TECurveConfig, Group, VariableBaseMSM,
-};
+use ark_ec::{models::CurveConfig, twisted_edwards, Group};
 use ark_ed_on_bls12_377::{EdwardsConfig, EdwardsProjective};
-use ark_ff::QuadExtField;
 use ark_serialize::{CanonicalDeserialize, Compress, Validate};
 use ark_std::io::Cursor;
 use sp_std::vec::Vec;

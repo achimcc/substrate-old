@@ -23,12 +23,7 @@ use crate::utils::serialize_result;
 use ark_bls12_381::{
 	g1, g2, Bls12_381, Fq12Config, G1Affine, G1Projective, G2Affine, G2Projective,
 };
-use ark_ec::{
-	models::CurveConfig,
-	pairing::{MillerLoopOutput, Pairing},
-	short_weierstrass::SWCurveConfig,
-	Group,
-};
+use ark_ec::{models::CurveConfig, pairing::Pairing, Group};
 use ark_ff::{Fp12ConfigWrapper, QuadExtField, Zero};
 use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate};
 use ark_std::io::Cursor;
@@ -81,10 +76,10 @@ pub fn final_exponentiation(target: Vec<u8>) -> Vec<u8> {
 /// Compute a scalar multiplication on G2 through arkworks
 pub fn mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
 	let cursor = Cursor::new(base);
-	let base = G2Projective::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
+	let _base = G2Projective::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
 
 	let cursor = Cursor::new(scalar);
-	let scalar = Vec::<u64>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
+	let _scalar = Vec::<u64>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
 
 	let result = G2Projective::generator();
 
