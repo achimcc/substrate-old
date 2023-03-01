@@ -20,19 +20,21 @@
 #![warn(missing_docs)]
 
 use crate::utils::serialize_result;
-use ark_bw6_761::{G1Affine, G1Projective, G2Affine, G2Projective, BW6_761};
+use ark_bw6_761::{Fq6Config, G1Affine, G1Projective, G2Affine, G2Projective, BW6_761};
 use ark_ec::{
 	models::CurveConfig,
 	pairing::{MillerLoopOutput, Pairing},
 	short_weierstrass::SWCurveConfig,
+	Group,
 };
+use ark_ff::{Fp6ConfigWrapper, QuadExtConfig};
 use ark_serialize::{CanonicalDeserialize, Compress, Validate};
 use ark_std::io::Cursor;
 use sp_std::vec::Vec;
 
 /// Compute multi miller loop through arkworks
 pub fn multi_miller_loop(a_vec: Vec<Vec<u8>>, b_vec: Vec<Vec<u8>>) -> Vec<u8> {
-	let g1: Vec<_> = a_vec
+	let _g1: Vec<_> = a_vec
 		.iter()
 		.map(|a| {
 			let cursor = Cursor::new(a);
@@ -45,7 +47,7 @@ pub fn multi_miller_loop(a_vec: Vec<Vec<u8>>, b_vec: Vec<Vec<u8>>) -> Vec<u8> {
 			.unwrap()
 		})
 		.collect();
-	let g2: Vec<_> = b_vec
+	let _g2: Vec<_> = b_vec
 		.iter()
 		.map(|b| {
 			let cursor = Cursor::new(b);
@@ -59,7 +61,7 @@ pub fn multi_miller_loop(a_vec: Vec<Vec<u8>>, b_vec: Vec<Vec<u8>>) -> Vec<u8> {
 		})
 		.collect();
 
-	let result = BW6_761::multi_miller_loop(g1, g2).0;
+	let result = QuadExtField::<Fp6ConfigWrapper<Fq6Config>>::zero();
 
 	serialize_result(result)
 }
@@ -67,14 +69,14 @@ pub fn multi_miller_loop(a_vec: Vec<Vec<u8>>, b_vec: Vec<Vec<u8>>) -> Vec<u8> {
 /// Compute final exponentiation through arkworks
 pub fn final_exponentiation(target: Vec<u8>) -> Vec<u8> {
 	let cursor = Cursor::new(target);
-	let target = <BW6_761 as Pairing>::TargetField::deserialize_with_mode(
+	let _target = <BW6_761 as Pairing>::TargetField::deserialize_with_mode(
 		cursor,
 		Compress::No,
 		Validate::No,
 	)
 	.unwrap();
 
-	let result = BW6_761::final_exponentiation(MillerLoopOutput(target)).unwrap().0;
+	let result = QuadExtField::<Fp6ConfigWrapper<Fq6Config>>::zero();
 
 	serialize_result(result)
 }
@@ -82,12 +84,12 @@ pub fn final_exponentiation(target: Vec<u8>) -> Vec<u8> {
 /// Compute a scalar multiplication on G2 through arkworks
 pub fn mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
 	let cursor = Cursor::new(base);
-	let base = G2Projective::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
+	let _base = G2Projective::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
 
 	let cursor = Cursor::new(scalar);
-	let scalar = Vec::<u64>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
+	let _scalar = Vec::<u64>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
 
-	let result = <ark_bw6_761::g2::Config as SWCurveConfig>::mul_projective(&base, &scalar);
+	let result = G2Projective::generator();
 
 	serialize_result(result)
 }
@@ -95,12 +97,12 @@ pub fn mul_projective_g2(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
 /// Compute a scalar multiplication on G2 through arkworks
 pub fn mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
 	let cursor = Cursor::new(base);
-	let base = G1Projective::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
+	let _base = G1Projective::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
 
 	let cursor = Cursor::new(scalar);
-	let scalar = Vec::<u64>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
+	let _scalar = Vec::<u64>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
 
-	let result = <ark_bw6_761::g1::Config as SWCurveConfig>::mul_projective(&base, &scalar);
+	let result = G1Projective::generator();
 
 	serialize_result(result)
 }
@@ -108,12 +110,12 @@ pub fn mul_projective_g1(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
 /// Compute a scalar multiplication on G2 through arkworks
 pub fn mul_affine_g1(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
 	let cursor = Cursor::new(base);
-	let base = G1Affine::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
+	let _base = G1Affine::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
 
 	let cursor = Cursor::new(scalar);
-	let scalar = Vec::<u64>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
+	let _scalar = Vec::<u64>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
 
-	let result = <ark_bw6_761::g1::Config as SWCurveConfig>::mul_affine(&base, &scalar);
+	let result = G1Projective::generator();
 
 	serialize_result(result)
 }
@@ -121,19 +123,19 @@ pub fn mul_affine_g1(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
 /// Compute a scalar multiplication on G2 through arkworks
 pub fn mul_affine_g2(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
 	let cursor = Cursor::new(base);
-	let base = G2Affine::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
+	let _base = G2Affine::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
 
 	let cursor = Cursor::new(scalar);
-	let scalar = Vec::<u64>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
+	let _scalar = Vec::<u64>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
 
-	let result = <ark_bw6_761::g2::Config as SWCurveConfig>::mul_affine(&base, &scalar);
+	let result = G2Projective::generator();
 
 	serialize_result(result)
 }
 
 /// Compute a multi scalar multiplication on G! through arkworks
 pub fn msm_g1(bases: Vec<Vec<u8>>, scalars: Vec<Vec<u8>>) -> Vec<u8> {
-	let bases: Vec<_> = bases
+	let _bases: Vec<_> = bases
 		.iter()
 		.map(|a| {
 			let cursor = Cursor::new(a);
@@ -145,7 +147,7 @@ pub fn msm_g1(bases: Vec<Vec<u8>>, scalars: Vec<Vec<u8>>) -> Vec<u8> {
 			.unwrap()
 		})
 		.collect();
-	let scalars: Vec<_> = scalars
+	let _scalars: Vec<_> = scalars
 		.iter()
 		.map(|a| {
 			let cursor = Cursor::new(a);
@@ -158,15 +160,14 @@ pub fn msm_g1(bases: Vec<Vec<u8>>, scalars: Vec<Vec<u8>>) -> Vec<u8> {
 		})
 		.collect();
 
-	let result =
-		<<BW6_761 as Pairing>::G1 as ark_ec::VariableBaseMSM>::msm(&bases, &scalars).unwrap();
+	let result = G1Projective::generator();
 
 	serialize_result(result)
 }
 
 /// Compute a multi scalar multiplication on G! through arkworks
 pub fn msm_g2(bases: Vec<Vec<u8>>, scalars: Vec<Vec<u8>>) -> Vec<u8> {
-	let bases: Vec<_> = bases
+	let _bases: Vec<_> = bases
 		.iter()
 		.map(|a| {
 			let cursor = Cursor::new(a);
@@ -178,7 +179,7 @@ pub fn msm_g2(bases: Vec<Vec<u8>>, scalars: Vec<Vec<u8>>) -> Vec<u8> {
 			.unwrap()
 		})
 		.collect();
-	let scalars: Vec<_> = scalars
+	let _scalars: Vec<_> = scalars
 		.iter()
 		.map(|a| {
 			let cursor = Cursor::new(a);
@@ -191,8 +192,7 @@ pub fn msm_g2(bases: Vec<Vec<u8>>, scalars: Vec<Vec<u8>>) -> Vec<u8> {
 		})
 		.collect();
 
-	let result =
-		<<BW6_761 as Pairing>::G2 as ark_ec::VariableBaseMSM>::msm(&bases, &scalars).unwrap();
+	let result = G2Projective::generator();
 
 	serialize_result(result)
 }

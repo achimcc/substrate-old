@@ -20,7 +20,6 @@ ark-bls12-381 = { version = "0.4.0", features = ["curve"], default-features = fa
 ark-bw6-761 = { version = "0.4.0", default-features = false }
 ark-ed-on-bls12-381 = { version = "0.4.0", default-features = false }
 ark-ed-on-bls12-377 = { version = "0.4.0", default-features = false }
-ark-r1cs-std = { version = "0.4.0", default-features = false }
 sp-std = { version = "5.0.0", path = "../std", default-features = false }
 
 [features]
@@ -35,6 +34,5 @@ std = [
 	"ark-bw6-761/std",
 	"ark-ed-on-bls12-381/std",
 	"ark-ed-on-bls12-377/std",
-	"ark-r1cs-std/std",
 	"sp-std/std"
 ]

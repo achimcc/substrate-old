@@ -21,9 +21,10 @@
 
 use crate::utils::serialize_result;
 use ark_ec::{
-	models::CurveConfig, twisted_edwards, twisted_edwards::TECurveConfig, VariableBaseMSM,
+	models::CurveConfig, twisted_edwards, twisted_edwards::TECurveConfig, Group, VariableBaseMSM,
 };
 use ark_ed_on_bls12_377::{EdwardsConfig, EdwardsProjective};
+use ark_ff::QuadExtField;
 use ark_serialize::{CanonicalDeserialize, Compress, Validate};
 use ark_std::io::Cursor;
 use sp_std::vec::Vec;
@@ -31,16 +32,16 @@ use sp_std::vec::Vec;
 /// Compute a scalar multiplication on G2 through arkworks
 pub fn mul_projective(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
 	let cursor = Cursor::new(base);
-	let base = twisted_edwards::Projective::<EdwardsConfig>::deserialize_with_mode(
+	let _base = twisted_edwards::Projective::<EdwardsConfig>::deserialize_with_mode(
 		cursor,
 		Compress::No,
 		Validate::No,
 	)
 	.unwrap();
 	let cursor = Cursor::new(scalar);
-	let scalar = Vec::<u64>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
+	let _scalar = Vec::<u64>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
 
-	let result = <EdwardsConfig as TECurveConfig>::mul_projective(&base, &scalar);
+	let result = EdwardsProjective::generator();
 
 	serialize_result(result)
 }
@@ -48,23 +49,23 @@ pub fn mul_projective(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
 /// Compute a scalar multiplication through arkworks
 pub fn mul_affine(base: Vec<u8>, scalar: Vec<u8>) -> Vec<u8> {
 	let cursor = Cursor::new(base);
-	let base = twisted_edwards::Affine::<EdwardsConfig>::deserialize_with_mode(
+	let _base = twisted_edwards::Affine::<EdwardsConfig>::deserialize_with_mode(
 		cursor,
 		Compress::No,
 		Validate::No,
 	)
 	.unwrap();
 	let cursor = Cursor::new(scalar);
-	let scalar = Vec::<u64>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
+	let _scalar = Vec::<u64>::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
 
-	let result = <EdwardsConfig as TECurveConfig>::mul_affine(&base, &scalar);
+	let result = EdwardsProjective::generator();
 
 	serialize_result(result)
 }
 
 /// Compute a multi scalar multiplication on G! through arkworks
 pub fn msm(bases: Vec<Vec<u8>>, scalars: Vec<Vec<u8>>) -> Vec<u8> {
-	let bases: Vec<_> = bases
+	let _bases: Vec<_> = bases
 		.iter()
 		.map(|a| {
 			let cursor = Cursor::new(a);
@@ -76,7 +77,7 @@ pub fn msm(bases: Vec<Vec<u8>>, scalars: Vec<Vec<u8>>) -> Vec<u8> {
 			.unwrap()
 		})
 		.collect();
-	let scalars: Vec<_> = scalars
+	let _scalars: Vec<_> = scalars
 		.iter()
 		.map(|a| {
 			let cursor = Cursor::new(a);
@@ -89,7 +90,7 @@ pub fn msm(bases: Vec<Vec<u8>>, scalars: Vec<Vec<u8>>) -> Vec<u8> {
 		})
 		.collect();
 
-	let result = <EdwardsProjective as VariableBaseMSM>::msm(&bases, &scalars).unwrap();
+	let result = EdwardsProjective::generator();
 
 	serialize_result(result)
 }
