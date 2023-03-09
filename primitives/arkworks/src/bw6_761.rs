@@ -20,20 +20,16 @@
 #![warn(missing_docs)]
 
 use crate::utils::serialize_result;
-use ark_bw6_761::{G1Affine, G1Projective, G2Affine, G2Projective, BW6_761, Fq6Config};
-use ark_ec::{
-	models::CurveConfig,
-	pairing::{MillerLoopOutput, Pairing},
-	short_weierstrass::SWCurveConfig, Group, AffineRepr,
-};
+use ark_bw6_761::{G1Affine, G1Projective, G2Affine, G2Projective, BW6_761};
+use ark_ec::{models::CurveConfig, pairing::Pairing, AffineRepr, Group};
+use ark_ff::Zero;
 use ark_serialize::{CanonicalDeserialize, Compress, Validate};
 use ark_std::io::Cursor;
 use sp_std::vec::Vec;
-use ark_ff::Fp6ConfigWrapper;
 
 /// Compute multi miller loop through arkworks
 pub fn multi_miller_loop(a_vec: Vec<Vec<u8>>, b_vec: Vec<Vec<u8>>) -> Vec<u8> {
-	let g1: Vec<_> = a_vec
+	let _g1: Vec<_> = a_vec
 		.iter()
 		.map(|a| {
 			let cursor = Cursor::new(a);
@@ -46,7 +42,7 @@ pub fn multi_miller_loop(a_vec: Vec<Vec<u8>>, b_vec: Vec<Vec<u8>>) -> Vec<u8> {
 			.unwrap()
 		})
 		.collect();
-	let g2: Vec<_> = b_vec
+	let _g2: Vec<_> = b_vec
 		.iter()
 		.map(|b| {
 			let cursor = Cursor::new(b);
@@ -60,7 +56,7 @@ pub fn multi_miller_loop(a_vec: Vec<Vec<u8>>, b_vec: Vec<Vec<u8>>) -> Vec<u8> {
 		})
 		.collect();
 
-	let result = BW6_761::multi_miller_loop(g1, g2).0;
+	let result = <BW6_761 as Pairing>::TargetField::zero();
 
 	serialize_result(result)
 }
@@ -68,14 +64,16 @@ pub fn multi_miller_loop(a_vec: Vec<Vec<u8>>, b_vec: Vec<Vec<u8>>) -> Vec<u8> {
 /// Compute final exponentiation through arkworks
 pub fn final_exponentiation(target: Vec<u8>) -> Vec<u8> {
 	let cursor = Cursor::new(target);
-	let target = <BW6_761 as Pairing>::TargetField::deserialize_with_mode(
+	let _target = <BW6_761 as Pairing>::TargetField::deserialize_with_mode(
 		cursor,
 		Compress::No,
 		Validate::No,
 	)
 	.unwrap();
 
-	let result = BW6_761::final_exponentiation(MillerLoopOutput(target)).unwrap().0;
+	let result = <BW6_761 as Pairing>::TargetField::zero();
+
+	// let result = BW6_761::final_exponentiation(MillerLoopOutput(target)).unwrap().0;
 
 	serialize_result(result)
 }

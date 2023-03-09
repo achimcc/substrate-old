@@ -25,7 +25,7 @@ use ark_bls12_381::{
 };
 use ark_ec::{models::CurveConfig, pairing::Pairing, Group};
 use ark_ff::{Fp12ConfigWrapper, QuadExtField, Zero};
-use ark_serialize::{CanonicalDeserialize, CanonicalSerialize, Compress, Validate};
+use ark_serialize::{CanonicalDeserialize, Compress, Validate};
 use ark_std::io::Cursor;
 use sp_std::vec::Vec;
 
