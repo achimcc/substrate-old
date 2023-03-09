@@ -10135,7 +10135,7 @@ dependencies = [
  "ark-r1cs-std",
  "ark-serialize",
  "ark-std",
- "sp-ark-models",
+ "sp-ark-models 0.4.0 (git+https://github.com/paritytech/ark-substrate?branch=no-compression)",
  "sp-ark-utils",
 ]
 
@@ -10149,7 +10149,7 @@ dependencies = [
  "ark-ff",
  "ark-serialize",
  "ark-std",
- "sp-ark-models",
+ "sp-ark-models 0.4.0 (git+https://github.com/paritytech/ark-substrate?branch=no-compression)",
  "sp-ark-utils",
 ]
 
@@ -10162,7 +10162,7 @@ dependencies = [
  "ark-ff",
  "ark-serialize",
  "ark-std",
- "sp-ark-models",
+ "sp-ark-models 0.4.0 (git+https://github.com/paritytech/ark-substrate?branch=no-compression)",
  "sp-ark-utils",
 ]
 
@@ -10176,7 +10176,7 @@ dependencies = [
  "ark-r1cs-std",
  "ark-serialize",
  "ark-std",
- "sp-ark-models",
+ "sp-ark-models 0.4.0 (git+https://github.com/paritytech/ark-substrate?branch=no-compression)",
  "sp-ark-utils",
 ]
 
@@ -10190,8 +10190,25 @@ dependencies = [
  "ark-r1cs-std",
  "ark-serialize",
  "ark-std",
- "sp-ark-models",
+ "sp-ark-models 0.4.0 (git+https://github.com/paritytech/ark-substrate?branch=no-compression)",
  "sp-ark-utils",
+]
+
+[[package]]
+name = "sp-ark-models"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "28fa906b809d7a346b2aa32a4bd0c884a75f9f588f9a4a07272f63eaf8a10765"
+dependencies = [
+ "ark-ec",
+ "ark-ff",
+ "ark-serialize",
+ "ark-std",
+ "derivative",
+ "getrandom 0.2.8",
+ "itertools",
+ "num-traits",
+ "zeroize",
 ]
 
 [[package]]
@@ -10249,7 +10266,7 @@ dependencies = [
  "sp-ark-bw6-761",
  "sp-ark-ed-on-bls12-377",
  "sp-ark-ed-on-bls12-381",
- "sp-ark-models",
+ "sp-ark-models 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "sp-io",
 ]
 
