@@ -5902,7 +5902,7 @@ dependencies = [
  "sp-keystore",
  "sp-runtime",
  "sp-std",
- "wasm-instrument 0.4.0",
+ "wasm-instrument",
  "wasmi 0.20.0",
  "wasmparser-nostd",
  "wat",
@@ -8855,7 +8855,7 @@ dependencies = [
  "sp-maybe-compressed-blob",
  "sp-wasm-interface",
  "thiserror",
- "wasm-instrument 0.3.0",
+ "wasm-instrument",
  "wasmi 0.13.2",
 ]
 
@@ -12372,15 +12372,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4eff853c4f09eec94d76af527eddad4e9de13b11d6286a1ef7134bc30135a2b7"
 dependencies = [
  "leb128",
-]
-
-[[package]]
-name = "wasm-instrument"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aa1dafb3e60065305741e83db35c6c2584bb3725b692b5b66148a38d72ace6cd"
-dependencies = [
- "parity-wasm",
 ]
 
 [[package]]
